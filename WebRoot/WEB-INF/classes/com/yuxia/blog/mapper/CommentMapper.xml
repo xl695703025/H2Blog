@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuxia.blog.mapper.CommentMapper">
+	<insert id="insertComment">
+		insert into
+		comment(commentArticleId,commentAuthorName,commentAuthorEmail,commentContent,commentIp,commentCreateTime)
+		values(#{articleId},#{commentAuthorName},#{commentAuthorEmail},#{commentContent},#{commentIp},#{commentCreateTime})
+	</insert>
+	<delete id="delCommentByArticleId">
+		delete
+		from comment
+		where commentArticleId=#{articleId}
+	</delete>
+	<delete id="delCommentById">
+		delete
+		from comment
+		where commentId=#{commentId}
+	</delete>
+	<select id="selectCommentArticleId" resultMap="commentMap">
+		select * from
+		comment
+		where commentArticleId=#{articleId}
+	</select>
+	<select id="selectCommentByUserName" resultMap="commentMap">
+		select
+		c.*,a.articleTitle commentArticleTitle
+		from comment c,article a
+		where
+		c.commentArticleId=a.articleId
+		and a.articleUserName=#{userName}
+		and
+		c.commentStatus=1 and a.articleStatus=1
+	</select>
+	<resultMap type="Comment" id="commentMap">
+		<id property="commentId" column="commentId" />
+		<result property="commentAuthorName" column="commentAuthorName" />
+		<result property="commentAuthorEmail" column="commentAuthorEmail" />
+		<result property="commentContent" column="commentContent" />
+		<result property="commentIp" column="commentIp" />
+		<result property="commentCreateTime" column="commentCreateTime" />
+		<association property="article" javaType="Article">
+			<result property="articleTitle" column="commentArticleTitle" />
+		</association>
+
+	</resultMap>
+</mapper>

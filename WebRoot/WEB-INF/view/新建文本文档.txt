@@ -1,0 +1,29 @@
+<!-- 文章管理 -->
+            <div class="right_col" role="main" id="articleManageContent">
+            	<p class="h1"><i class="fa fa-book"></i>博文管理：</p>
+            	<p class="h2" id="category"></p>
+            	<table id="datatable" class="table table-striped jambo_table bulk_action">
+                      <thead>
+                            <tr class="headings">
+                                <th class="column-title">文章Id </th>
+                                <th class="column-title">文章名 </th>
+                                <th class="column-title">作者</th>
+                                <th class="column-title">内容摘要</th>
+                                <th class="column-title">一级分类</th>
+                                <th class="column-title">二级分类</th>
+                                <th class="column-title">标签</th>
+                                <th class="column-title">发布时间</th>
+                                <th class="column-title">最后一次修改时间</th>
+                                <th class="column-title no-link last"><span class="nobr">操作</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody">
+                            
+                        </tbody>
+                </table>
+                <p style="float: right"><span style="font-size: 25px">当前页数:[<span id="now"></span>/<span id="total"></span>]&nbsp;</span>
+                    <a class="btn btn-default submit" href="javascript:;" id="pPage">上一页</a>
+                    <a class="btn btn-default submit" href="javascript:;" id="nPage">下一页</a>
+                </p>
+            </div>
+            <!-- /文章管理 -->

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<!--允许 JDBC 支持自动生成主键 -->
+		<setting name="useGeneratedKeys" value="true" />
+		<!--是否开启自动驼峰命名规则（camel case）映射，即从经典数据库 列名 A_COLUMN 到经典 Java 属性名 aColumn 
+			的类似映射。 -->
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+		<!-- 懒加载为false -->
+		<setting name="lazyLoadingEnabled" value="false"/>
+		<setting name="logImpl" value="LOG4J2" />
+	</settings>
+	<typeAliases>
+		<package name="com.yuxia.blog.entity" />
+	</typeAliases>
+</configuration>

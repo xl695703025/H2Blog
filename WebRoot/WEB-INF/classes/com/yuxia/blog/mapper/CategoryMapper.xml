@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuxia.blog.mapper.CategoryMapper">
+	<select id="selectCategoryByPCategory" resultMap="categoryMap">
+		select c.*,u.userName
+		from user u ,category c
+		where c.categoryPid=#{pCategoryId} 
+		and u.userName=c.categoryUserName
+	</select>
+	<delete id="delCommentByArticleId">
+		delete
+		from comment
+		where commentArticleId=#{articleId}
+	</delete>
+	<delete id="delCategoryById">
+		delete
+		from category
+		where categoryId=#{categoryId}
+		or
+		categoryPid=#{categoryId}
+	</delete>
+	<insert id="insertCategory" parameterType="Category"
+		keyProperty="categoryId">
+		insert into
+		category(categoryUserName,categoryPid,categoryName,categoryDescription)
+		values(#{user.userName},#{categoryPid},#{categoryName},#{categoryDescription})
+	</insert>
+	<update id="updateCategory">
+		update category
+		<set>
+			<if test="categoryName!=null and categoryName!=''">categoryName=#{categoryName},</if>
+			<if test="categoryDescription!=null and categoryDescription!=''">categoryDescription=#{categoryDescription},</if>
+		</set>
+		where categoryId=#{categoryId}
+	</update>
+	<select id="selectCategoryByName" resultType="Category">
+		select * from
+		category
+		where categoryUserName=#{userName}
+		and
+		categoryName=#{categoryName}
+		and categoryStatus=1
+	</select>
+	<select id="selectCategoryById" resultMap="categoryMap">
+		select c.*,u.userName
+		from user u ,category c
+		where c.categoryId=#{categoryId} and
+		u.userName=c.categoryUserName
+	</select>
+	<resultMap type="Category" id="categoryMap">
+		<id property="categoryId" column="categoryId" />
+		<result property="categoryName" column="categoryName" />
+		<result property="categoryPid" column="categoryPid" />
+		<result property="categoryDescription" column="categoryDescription" />
+		<association property="user" javaType="User">
+			<result property="userName" column="userName" />
+		</association>
+	</resultMap>
+	<select id="selectAllCategory" resultMap="categoryList">
+		select c1.categoryId
+		pId,c1.categoryName pName,c1.categoryDescription pDescription,
+		c2.categoryId cId,c2.categoryName cName,c2.categoryDescription
+		cDescription
+		from category c1 LEFT JOIN category c2 on
+		c1.categoryId=c2.categoryPid
+		where c1.categoryUserName=#{userName} and
+		c1.categoryPid=0
+	</select>
+	<resultMap type="Category" id="categoryList">
+		<id property="categoryId" column="pId" />
+		<result property="categoryName" column="pName" />
+		<result property="categoryDescription" column="pDescription" />
+		<collection property="childCategoryList" ofType="Category"
+			javaType="java.util.List">
+			<id property="categoryId" column="cId" />
+			<result property="categoryName" column="cName" />
+			<result property="categoryDescription" column="cDescription" />
+		</collection>
+	</resultMap>
+</mapper>

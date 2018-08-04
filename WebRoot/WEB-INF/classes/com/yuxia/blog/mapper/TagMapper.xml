@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuxia.blog.mapper.TagMapper">
+	<select id="selectHotTags" resultType="Tag">
+		select * from tag where
+		tagUserName=#{userName} and tagStatus=1 limit 0,15
+	</select>
+	<select id="selectTagUserName" resultType="Tag">
+		select * from tag
+		where tagUserName=#{userName} and tagStatus=1
+	</select>
+	<update id="delTagById">
+		update tag
+		set tagStatus=0
+		where tagId=#{tagId}
+	</update>
+	<insert id="addTag">
+		insert into tag(tagUserName,tagName,tagDescription)
+		values(#{tagUserName},#{tagName},#{tagDescription})
+	</insert>
+	<select id="selectTagByTagName" resultType="Tag">
+		select * from tag
+		where tagUserName=#{userName} and tagName=#{tagName}
+	</select>
+	<select id="selectTagByTagId" resultType="Tag">
+		select * from tag
+		where
+		tagId=#{tagId}
+	</select>
+	<update id="updateTagByTagId">
+		update tag
+		set
+		tagName=#{tagName},tagDescription=#{tagDescription}
+		where
+		tagId=#{tagId}
+	</update>
+	<insert id="insertTag" useGeneratedKeys="true" keyProperty="tagId">
+		insert into tag(tagUserName,tagName,tagDescription)
+		values(#{user.userName},#{tagName},#{tagDescription})
+	</insert>
+</mapper>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuxia.blog.mapper.ArticleMapper">
+	<select id="selectArticleByTagId" resultMap="articleMap">
+		select a.*,u.*,c1.categoryName pCategoryName,c2.categoryName cCategoryName
+		from article a,category c1,category c2,user u
+		where a.articleParentCategoryId=c1.categoryId 
+		and a.articleChildCategoryId=c2.categoryId 
+		and a.articleUserName=u.userName
+		and u.userName=#{userName}
+		and a.articleTagIds REGEXP  ',${tagId},|^${tagId},|,${tagId}$|^${tagId}$'
+		limit #{index},#{pageSize}
+	</select>
+	<select id="selectHotArticles" resultMap="articleMap">
+		select a.*,u.*,c1.categoryName pCategoryName,c2.categoryName cCategoryName
+		from article a,category c1,category c2,user u
+		where a.articleParentCategoryId=c1.categoryId 
+		and a.articleChildCategoryId=c2.categoryId 
+		and a.articleUserName=u.userName
+		and u.userName=#{userName}
+		order by articleViewCount desc
+		limit 0,10
+	</select>
+	<insert id="insertArticle">
+		insert into article(articleUserName,articleTitle,articleContent,articleParentCategoryId,articleChildCategoryId,articleTagIds,articlePostTime)
+		values(#{user.userName},#{articleTitle},#{articleContent},#{articleParentCategory.categoryId},#{articleChildCategory.categoryId},#{articleTagIds},#{articlePostTime})
+	</insert>
+	<select id="selectArticleById" resultMap="articleMap">
+		select a.*,u.*,c1.categoryName pCategoryName,c2.categoryName cCategoryName
+		from article a,category c1,category c2,user u
+		 where a.articleParentCategoryId=c1.categoryId 
+		and a.articleChildCategoryId=c2.categoryId 
+		and a.articleUserName=u.userName
+		and a.articleId=#{articleId}
+	</select>
+	<update id="updateArtcile">
+		update article
+		<set>
+			<if test="articleTitle!=null and articleTitle!=''">
+				articleTitle=#{articleTitle},
+			</if>
+			<if test="articleContent!=null and articleContent!=''">
+				articleContent=#{articleContent},
+			</if>
+			<if test="articleParentCategory!=null and articleParentCategory.categoryId!=null">
+				articleParentCategoryId=#{articleParentCategory.categoryId},
+			</if>
+			<if test="articleChildCategory!=null and articleChildCategory.categoryId!=null">
+				articleChildCategoryId=#{articleChildCategory.categoryId},
+			</if>
+			<if test="articleTagIds!=null and articleTagIds!=''">
+				articleTagIds=#{articleTagIds},
+			</if>
+			<if test="articleViewCount!=0">
+				articleViewCount=#{articleViewCount},
+			</if>
+			<if test="articleCommentCount!=0">
+				articleCommentCount=#{articleCommentCount},
+			</if>
+			<if test="articleLikeCount!=0">
+				articleLikeCount=#{articleLikeCount},
+			</if>
+			<if test="articlePostTime!=null">
+				articlePostTime=#{articlePostTime},
+			</if>
+			<if test="articleUpdateTime!=null">
+				articleUpdateTime=#{articleUpdateTime},
+			</if>
+		</set>
+		where articleId=#{articleId}
+	</update>
+	<delete id="delArticleById">
+		delete 
+		from article
+		where articleId=#{articleId}
+	</delete>
+	<select id="selectCountByCategory" resultType="java.lang.Integer">
+		select count(1) from article where articleUserName=#{userName} and articleChildCategoryId=#{categoryId}
+	</select>
+	<select id="selectArticleCount" resultType="java.lang.Integer">
+		select count(1) from article where articleUserName=#{userName} and articleStatus=1
+	</select>
+	<select id="selectArticleViewCount" resultType="java.lang.Integer">
+		select sum(articleViewCount) from article where articleUserName=#{userName} and articleStatus=1
+	</select>
+	<select id="selectArticleLikeCount" resultType="java.lang.Integer">
+		select sum(articleLikeCount) from article where articleUserName=#{userName} and articleStatus=1
+	</select>
+	<select id="selectArticleCommentCount" resultType="java.lang.Integer">
+		select sum(articleCommentCount) from article where articleUserName=#{userName} and articleStatus=1
+	</select>
+	<select id="selectArticleByUserName" resultMap="articleMap">
+		select a.*,u.*,c1.categoryName pCategoryName,c2.categoryName cCategoryName
+		from article a,category c1,category c2,user u
+		where a.articleParentCategoryId=c1.categoryId 
+		and a.articleChildCategoryId=c2.categoryId 
+		and a.articleUserName=u.userName
+		and u.userName=#{userName}
+		limit #{index},#{pageSize}
+	</select>
+	<select id="selectArticleByCategory" resultMap="articleMap">
+		select a.*,u.*,c1.categoryName pCategoryName,c2.categoryName cCategoryName
+		from article a,category c1,category c2,user u
+		where a.articleChildCategoryId=#{categoryId}
+		and a.articleParentCategoryId=c1.categoryId 
+		and a.articleChildCategoryId=c2.categoryId 
+		and a.articleUserName=u.userName
+		and u.userName=#{userName}
+		limit #{index},#{pageSize}
+	</select>
+	<resultMap type="Article" id="articleMap">
+		<id property="articleId" column="articleId" />
+		<result property="articleTitle" column="articleTitle"/>
+		<result property="articleContent" column="articleContent"/>
+		<result property="articleTagIds" column="articleTagIds"/>
+		<result property="articlePostTime" column="articlePostTime"/>
+		<result property="articleUpdateTime" column="articleUpdateTime"/>
+		<result property="articleViewCount" column="articleViewCount"/>
+		<result property="articleCommentCount" column="articleCommentCount"/>
+		<result property="articleLikeCount" column="articleLikeCount"/>
+		<association property="user" javaType="User">
+			<result property="userName" column="userName"/>
+		</association>
+		<association property="articleParentCategory" javaType="Category">
+			<result property="categoryName" column="pCategoryName"/>
+		</association>
+		<association property="articleChildCategory" javaType="Category">
+			<result property="categoryName" column="cCategoryName"/>
+		</association>
+	</resultMap>
+</mapper>
